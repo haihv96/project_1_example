@@ -1,0 +1,38 @@
+<% provide :title, @user.name %>
+<div class="row">
+  <aside class="col-md-4">
+    <section class="user_info">
+      <%= gravatar_for @user, size: 200 %>
+      <strong class="text-info"><%= t "words.name" %></strong>
+      <span class="info"><%= @user.name %></span>
+      <strong class="text-info"><%= t "words.email" %></strong>
+      <span class="info"><%= @user.email %></span>
+      <strong class="text-info"><%= t "words.birthday" %></strong>
+      <span class="info"><%= @user.birthday %></span>
+      <strong class="text-info"><%= t "words.gender" %></strong>
+      <span class="info"><%= @user.gender %></span>
+      <strong class="text-info"><%= t "words.address" %></strong>
+      <span class="info"><%= @user.address %></span>
+    </section>
+    <% if current_user?(@user) || logged_in? && current_user.admin? %>
+      <div class="col-md-4">
+        <%= link_to t("words.edit"),
+          edit_user_path(@user), class: "btn btn-primary" %>
+      </div>
+    <% end %>
+    <section class="stats">
+      <%= render "shared/stats" %>
+    </section>
+  </aside>
+
+  <aside class="col-md-6">
+    <%= render "follow_form" if logged_in? %>
+    <% if @user.microposts.any? %>
+      <h3> <%= t(".micropost") %> (<%= @user.microposts.size %>)</h3>
+      <ol class="microposts">
+        <%= render @microposts %>
+      </ol>
+      <%= paginate @microposts, theme: "twitter-bootstrap-3" %>
+    <% end %>
+  </aside>
+</div>
