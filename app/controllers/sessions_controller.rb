@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
 
   def destroy
     log_out
-    flash[:success] = t ".success"
+    flash[:success] = "Logout success"
     redirect_to login_path
   end
 end
