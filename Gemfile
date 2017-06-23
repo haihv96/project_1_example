@@ -24,7 +24,8 @@ gem "toastr-rails", "1.0.3"
 group :development, :test do
   gem "byebug", platform: :mri
   gem "capybara", "~> 2.13"
-  gem "mysql2", ">= 0.3.18", "< 0.5"
+  gem "mysql2", "0.4.6"
+  gem "sqlite3", "1.3.13"
   gem "selenium-webdriver"
 end
 
