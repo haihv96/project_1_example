@@ -15,4 +15,8 @@ class Post < ApplicationRecord
   def comments_timeline
     Comment.timeline id
   end
+
+  def some_comments
+    Comment.load_comments self.comments.ids.last, 5
+  end
 end

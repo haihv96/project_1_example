@@ -111,7 +111,7 @@ $(document).ready(function () {
     reset_form(form_element, 'post', 'get', form_element.attr('action'));
   });
 
-  $('.edit_post').submit(function (event) {
+  $('body').on('submit', '.edit_post', function (event) {
     event.preventDefault();
     var form = $(this);
     var params = form.serialize();
