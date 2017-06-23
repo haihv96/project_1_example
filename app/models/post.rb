@@ -10,7 +10,7 @@ class Post < ApplicationRecord
       .order(created_at: :desc)
   end
 
-  scope :linetime, -> (id) {order created_at: :desc}
+  scope :linetime, -> {order created_at: :desc}
 
   def comments_timeline
     Comment.timeline id
