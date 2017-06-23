@@ -1,8 +1,5 @@
 Rails.application.routes.draw do
-  root "static_pages#home"
-  get "help", to: "static_pages#help"
-  get "about", to: "static_pages#about"
-  get "contact", to: "static_pages#contact"
+  root "static_pages#index"
   get "sign_up", to: "users#new"
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
@@ -11,6 +8,12 @@ Rails.application.routes.draw do
     member do
       get :following, :followers
     end
+  end
+  resources :posts, only: [:show, :create, :update, :destroy] do
+    member do
+      post "load_comment"
+    end
+    resources :comments, only: [:edit, :create, :update, :destroy]
   end
   resources :relationships, only: [:create, :destroy]
 end

@@ -1,6 +1,9 @@
 module ApplicationHelper
-  def full_title page_title = ""
-    base_title = t "content.base_title"
-    page_title.empty? ? base_title : page_title + " | " + base_title
+  def time_status object
+    if object.created_at == object.updated_at
+      "#{time_ago_in_words object.created_at} ago"
+    else
+      "Updated #{time_ago_in_words object.updated_at} ago"
+    end
   end
 end

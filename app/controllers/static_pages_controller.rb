@@ -1,18 +1,13 @@
 class StaticPagesController < ApplicationController
-  def home
-    if logged_in?
-      @micropost = current_user.microposts.build
-      @feed_items = current_user.feed
-        .page(params[:page]).per Settings.microposts.per_page
-    end
+  def index
+    @posts = get_data
+    @post = Post.new
   end
 
-  def about
-  end
+  private
 
-  def contact
-  end
-
-  def help
+  def get_data
+    data = logged_in? ? current_user.feed : Post.linetime
+    @users = data.page(params[:page]).per 5
   end
 end

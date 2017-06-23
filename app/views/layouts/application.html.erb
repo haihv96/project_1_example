@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= full_title yield :title %></title>
-    <%= render "layouts/rails_default" %>
-    <%= render "layouts/shim" %>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title> Welcome | Social Wall</title>
+    <%= render "layouts/include_assets" %>
   </head>
-  <body>
-    <%= render "layouts/header" %>
-    <div class="container">
-      <%= render "shared/flash_messages" %>
-      <%= yield %>
-      <%= render "layouts/footer" %>
-    </div>
-  </body>
+  <% if logged_in? %>
+    <%= render "layouts/user" %>
+  <% else %>
+    <%= render "layouts/guest" %>
+  <% end %>
 </html>

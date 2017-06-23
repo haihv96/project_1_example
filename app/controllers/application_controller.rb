@@ -2,16 +2,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   include SessionsHelper
   include UsersHelper
+  include CommentsHelper
 
   def logged_in_user
     unless logged_in?
       flash[:danger] = t "login.require"
       redirect_to login_path
     end
-  end
-
-  def is_admin?
-    render_404 unless current_user.admin?
   end
 
   def logged_out_user

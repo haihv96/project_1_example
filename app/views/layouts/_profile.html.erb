@@ -13,19 +13,28 @@
   </div>
   <div class="profile-usermenu">
     <div class="row">
-      <div class="col-md-6 follows">
-        <p><%= @user.followers.size %></p>
-        Followers
-      </div>
-      <div class="col-md-6 follows">
-        <p><%= @user.following.size %></p>
-        Following
-      </div>
+      <%= link_to followers_user_path(@user) do %>
+        <div class="col-md-6 follows">
+          <p id="count_followers"><%= @user.followers.size %></p>
+          Followers
+        </div>
+      <% end %>
+      <%= link_to following_user_path(@user) do %>
+        <div class="col-md-6 follows following">
+          <p id="count_following"><%= @user.following.size %></p>
+          Following
+        </div>
+      <% end %>
     </div>
   </div>
-  <div class="profile-userbuttons">
-    <button type="button" class="btn btn-success btn-sm">Follow</button>
-    <button type="button" class="btn btn-danger btn-sm">Message</button>
+  <div class="profile-userbuttons follow">
+    <% if logged_in? && !try(:current_user?, @user) %>
+      <% if current_user.following? @user %>
+        <%= render "shared/unfollow_form", user: @user %>
+      <% else %>
+        <%= render "shared/follow_form", user: @user %>
+      <% end %>
+    <% end %>
   </div>
   <div class="profile-usermenu">
     <ul class="nav">

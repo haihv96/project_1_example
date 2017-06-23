@@ -18,6 +18,8 @@ gem "sass-rails", "~> 5.0"
 gem "turbolinks", "~> 5"
 gem "uglifier", ">= 1.3.0"
 gem "i18n-js", "3.0.0"
+gem "font-awesome-rails", "4.7.0.2"
+gem "toastr-rails", "1.0.3"
 
 group :development, :test do
   gem "byebug", platform: :mri
@@ -41,7 +43,7 @@ group :test do
 end
 
 group :production do
-
+  gem "pg", "0.20.0"
 end
 
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]

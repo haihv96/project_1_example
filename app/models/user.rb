@@ -1,13 +1,12 @@
 class User < ApplicationRecord
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
-  attr_accessor :remember_token, :current_password,
-    :activation_token, :reset_token
+  attr_accessor :remember_token
 
-  enum role: [:user, :admin]
   enum gender: [:female, :male, :other]
 
-  has_many :microposts, dependent: :destroy
+  has_many :posts, dependent: :destroy
+  has_many :comments, dependent: :destroy
   has_many :active_relationships, class_name: :Relationship,
     foreign_key: :follower_id, dependent: :destroy
   has_many :passive_relationships, class_name: :Relationship,
@@ -15,7 +14,7 @@ class User < ApplicationRecord
   has_many :following, through: :active_relationships, source: :followed
   has_many :followers, through: :passive_relationships, source: :follower
 
-  validates :name, presence: true,
+  validates :full_name, presence: true,
     length: {maximum: Settings.user.max_length_name}
   validates :email, presence: true,
     length: {maximum: Settings.user.max_length_email},
@@ -25,12 +24,11 @@ class User < ApplicationRecord
   validates :password, presence: true, allow_nil: true,
     length: {maximum: Settings.user.max_length_name}
 
-  validates :current_password, presence: true, allow_nil: true
-
   before_save :downcase_email
-  before_create :create_activation_digest
 
   scope :order_id, -> {order id: :ASC}
+
+  scope :top_followers, -> {order id: :desc}
 
   class << self
     def digest string
@@ -62,50 +60,14 @@ class User < ApplicationRecord
     update_attributes remember_digest: nil
   end
 
-  def send_change_password_mail
-    UserMailer.change_password(self).deliver_now
-  end
-
-  def send_activation_email
-    UserMailer.account_activation(self).deliver_now
-  end
-
-  def send_password_reset_email
-    UserMailer.password_reset(self).deliver_now
-  end
-
-  def activate
-    update_columns activated: true, activation_digest: nil,
-      activated_at: Time.zone.now
-  end
-
-  def activated?
-    self.activated
-  end
-
-  def create_reset_digest
-    self.reset_token = User.new_token
-    update_columns reset_digest: User.digest(reset_token),
-      reset_sent_at: Time.zone.now
-  end
-
-  def password_reset_expired?
-    reset_sent_at < Settings.user.password_reset_expire.hours.ago
-  end
-
-  def password_present? password
-    unless password.present?
-      errors[:password] << I18n.t("user.password_present.error")
-    end
-    return true unless errors.any?
-  end
-
-  def follow  other_user
-    following << other_user
+  def follow other_user
+    following << other_user if other_user.present? &&
+      !following?(other_user)
   end
 
   def unfollow other_user
-    following.delete other_user
+    following.delete other_user if other_user.present? &&
+      following?(other_user)
   end
 
   def following? other_user
@@ -113,17 +75,28 @@ class User < ApplicationRecord
   end
 
   def feed
-    Micropost.feed_by_following following.ids, id
+    following.present? ? Post.feed_by_user(following.ids, id) : self.posts
+  end
+
+  def is_author? post
+    self == post.user
+  end
+
+  def can_comment? post
+    following?(post.try :user) || is_author?(post)
+  end
+
+  def is_commentator? comment
+    self == comment.user
+  end
+
+  def can_delete? comment
+    (is_commentator? comment) || (self == comment.post.user)
   end
 
   private
 
   def downcase_email
     email.downcase!
-  end
-
-  def create_activation_digest
-    self.activation_token = User.new_token
-    self.activation_digest = User.digest activation_token
   end
 end

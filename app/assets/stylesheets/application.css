@@ -1,5 +1,7 @@
 /*
- *= require_tree .
+ *= require font-awesome
  *= require socialwallscript
+ *= require profile
+ *= require_tree .
  *= require_self
  */
