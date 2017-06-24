@@ -1,4 +1,7 @@
 <% @user ||= current_user %>
+<% if @user != current_user %>
+  <div id="profile-page"></div>
+<% end %>
 <div class="profile-sidebar">
   <div class="profile-userpic">
     <%= link_to user_path(@user) do %>
