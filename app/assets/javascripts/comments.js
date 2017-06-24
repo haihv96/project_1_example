@@ -26,7 +26,6 @@ $(document).ready(function () {
         data: {},
         dataType: 'json',
         success: function (response) {
-          page_notice(response.status, response.message);
           if (response.status == 'success') {
             button.closest('.comment-item').fadeOut('normal');
           }
@@ -55,7 +54,6 @@ $(document).ready(function () {
       data: params,
       dataType: 'json',
       success: function (response) {
-        page_notice(response.status, response.message)
         if (response.status == 'success') {
           update_comment_real_time(form);
         } else {
@@ -121,7 +119,7 @@ function request_ajax(event, form) {
         $(response.html).prependTo(form.closest('.post-item')
           .find('#show_comment'))
           .hide().fadeIn('normal');
-      } else {
+      } else if (response.message) {
         page_notice(response.status, response.message);
       }
     },

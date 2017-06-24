@@ -126,11 +126,11 @@ $(document).ready(function () {
       dataType: 'json',
       success: function (response) {
         if (response.status == 'success') {
-          if (response.id_comment_continue == '0') {
-            form.remove();
-          }
           form.find('#post_id_comment_continue').val(response.id_comment_continue);
           form.prev().before(response.html).hide();
+          if (!response.continue_loading) {
+            form.remove();
+          }
 
         } else {
           console.log('sfdsf');

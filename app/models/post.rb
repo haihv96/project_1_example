@@ -16,7 +16,19 @@ class Post < ApplicationRecord
     Comment.timeline id
   end
 
-  def some_comments
-    Comment.load_comments self.comments.ids.last, 5
+  def load_more_comments id_comment_continue, number
+    Comment.load_comments id_comment_continue, number, id
+  end
+
+  def load_first_comments
+    comments.order_time.limit 5
+  end
+
+  def count_first_comment
+    comments.order_time.limit(6).count
+  end
+
+  def rest_comments id_comment_continue
+    Comment.load_comments id_comment_continue, nil, id
   end
 end

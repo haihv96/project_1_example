@@ -45,12 +45,16 @@ class PostsController < ApplicationController
   end
 
   def load_comment
-    continue = params[:post][:id_comment_continue].to_i - 1;
-    if @comments = @post.comments.load_comments(continue,
-      params[:post][:number])
-      render json: {status: :success,
-        id_comment_continue: @comments.ids.present? ? @comments.ids.last : 0,
-        html: render_to_string(@comments)}
+    rest_comments = @post.rest_comments params[:post][:id_comment_continue]
+    @comments = rest_comments.try(:limit, 5)
+    if @comments
+      render json: {
+        status: :success,
+        id_comment_continue:
+          @comments.ids.present? ? @comments.last_id : 0,
+        continue_loading: rest_comments.count > 5,
+        html: render_to_string(@comments)
+      }
     else
       render json: {status: :error}
     end
